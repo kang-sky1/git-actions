@@ -10,8 +10,11 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: Load Notification Template
+        run: echo "NOTIFICATION_TEMPLATE=${{ variables.NOTIFICATION_TEMPLATE }}" >> $GITHUB_ENV
+
       - uses: Ilshidur/action-discord@0.3.2
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_LINK }}
           DISCORD_USERNAME: 알림봇
-          DISCORD_EMBEDS: ${{ vars.NOTIFICATION_TEMPLATE }}
+          DISCORD_EMBEDS: ${{ env.NOTIFICATION_TEMPLATE }}

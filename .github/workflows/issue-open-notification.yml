@@ -11,6 +11,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Send Message to discord
+        env:
+          title : ${{ github.event.issue.title }}
+          url : ${{ github.event.issue.html_url }}
+          issue_number : ${{ github.event.issue.number }}
+          author : ${{ github.event.issue.user.login }}
         run: |
           curl -X POST \
           -H "Content-Type: application/json" \
@@ -18,18 +23,18 @@ jobs:
             "username": "이슈봇",
             "embeds" : [
               {
-                "title": "이슈 오픈: ${{ github.event.issue.title }}",
+                "title": "이슈 오픈: $title",
                 "color": 1127128,
-                "description": "${{ github.event.issue.html_url }}",
+                "description": "$url",
                 "fields": [
                   {
                     "name": "넘버",
-                    "value": "#${{ github.event.issue.number }}",
+                    "value": "#$issue_number",
                     "inline": true
                   },
                   {
                     "name": "작성자",
-                    "value": "${{ github.event.issue.user.login }}",
+                    "value": "$author",
                     "inline": true
                   }
                 ]

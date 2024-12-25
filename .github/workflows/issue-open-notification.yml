@@ -23,24 +23,32 @@ jobs:
           author="${{ github.event.issue.user.login }}"
           
           json_payload=$(jq -n \
-            --arg title "$title" \
-            --arg url "url" \
-            --arg issue_number "$issue_number" \
-            --arg author "$author" \
-                  '{
-          username: "이슈봇",
-          embeds: [
-            {
-              title: ("이슈 오픈: " + $title),
-              color: 1127128,
-              description: $url,
-              fields: [
-                { name: "넘버", value: ("#" + $issue_number), inline: true },
-                { name: "작성자", value: $author, inline: true }
-              ]
-            }
-          ]
-         }')
+          --arg title "$title" \
+          --arg url "url" \
+          --arg issue_number "$issue_number" \
+          --arg author "$author" \
+          '{
+            username: "이슈봇",
+            embeds: [
+              {
+                title: ("이슈 오픈: " + $title),
+                color: 1127128,
+                description: $url,
+                fields: [
+                  {
+                    name: "넘버",
+                    value: ("#" + $issue_number),
+                    inline: true
+                  },
+                  {
+                    name: "작성자",
+                    value: $author,
+                    inline: true
+                  }
+                ]
+              }
+            ]
+          }')
           
           curl -X POST \
               -H "Content-Type: application/json \

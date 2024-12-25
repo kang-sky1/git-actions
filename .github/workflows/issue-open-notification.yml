@@ -12,10 +12,10 @@ jobs:
     steps:
       - name: Send Message to discord
         env:
-          title : ${{ github.event.issue.title }}
-          url : ${{ github.event.issue.html_url }}
-          issue_number : ${{ github.event.issue.number }}
-          author : ${{ github.event.issue.user.login }}
+          title: ${{ github.event.issue.title }}
+          url: ${{ github.event.issue.html_url }}
+          issue_number: ${{ github.event.issue.number }}
+          author: ${{ github.event.issue.user.login }}
         run: |
           curl -X POST \
           -H "Content-Type: application/json" \

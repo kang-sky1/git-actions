@@ -4,54 +4,33 @@ on:
   issues:
     types:
       - opened
-
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v3
-
-      - name: Send Message to discord
-        env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_LINK }}
-
-        run: |
-          title="${{ github.event.issue.title }}"
-          url="${{ github.event.issue.html_url }}"
-          issue_number="${{ github.event.issue.number }}"
-          author="${{ github.event.issue.user.login }}"
-          
-          json_payload=$(jq -n \
-          --arg title "$title" \
-          --arg url "url" \
-          --arg issue_number "$issue_number" \
-          --arg author "$author" \
-          '{
-            username: "이슈봇",
-            embeds: [
+      - uses: actions/checkout@v3
+      - uses: tsickert/discord-webhook@v6.0.0
+        with:
+          webhook-url: ${{ secrets.DISCORD_LINK }}
+          username: 알림봇
+          embeds: |
+            [
               {
-                title: ("이슈 오픈: " + $title),
-                color: 1127128,
-                description: $url,
-                fields: [
+                "title": "이슈 오픈: ${{ github.event.issue.title }}",
+                "color": 1127128,
+                "description": "${{ github.event.issue.html_url }}",
+                "fields": [
                   {
-                    name: "넘버",
-                    value: ("#" + $issue_number),
-                    inline: true
+                    "name": "넘버",
+                    "value": "#${{ github.event.issue.number }}",
+                    "inline": true
                   },
                   {
-                    name: "작성자",
-                    value: $author,
-                    inline: true
+                    "name": "작성자",
+                    "value": "${{ github.event.issue.user.login }}",
+                    "inline": true
                   }
                 ]
               }
             ]
-          }')
-          
-          curl -X POST \
-              -H "Content-Type: application/json \
-              -d "$json_payload" \
-              "$DISCORD_WEBHOOK"
           

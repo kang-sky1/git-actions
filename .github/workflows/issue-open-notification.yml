@@ -40,6 +40,4 @@ jobs:
                   ]
                 }
               ]
-            }
-  EOF
-  )" ${{ secrets.DISCORD_LINK }}
+            })" ${{ secrets.DISCORD_LINK }}

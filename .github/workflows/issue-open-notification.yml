@@ -10,11 +10,29 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Load Notification Template
-        run: echo "NOTIFICATION_TEMPLATE=${{ secrets.NOTIFICATION_TEMPLATE }}" >> $GITHUB_ENV
-
-      - uses: Ilshidur/action-discord@0.3.2
-        env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_LINK }}
-          DISCORD_USERNAME: 알림봇
-          DISCORD_EMBEDS: ${{ env.NOTIFICATION_TEMPLATE }}
+      - name: Send Message to discord
+        run: |
+          curl -X POST \
+          -H "Content-Type: application/json" \
+          -d '{
+            "username": "이슈봇",
+            "embeds" : [
+              {
+                "title": "이슈 오픈: ${{ github.event.issue.title }}",
+                "color": 1127128,
+                "description": "${{ github.event.issue.html_url }}",
+                "fields": [
+                  {
+                    "name": "넘버",
+                    "value": "#${{ github.event.issue.number }}",
+                    "inline": true
+                  },
+                  {
+                    "name": "작성자",
+                    "value": "${{ github.event.issue.user.login }}",
+                    "inline": true
+                  }
+                ]
+              }
+            ]
+          }'\ ${{ secrets.DISCORD_LINK }}

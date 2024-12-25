@@ -17,27 +17,28 @@ jobs:
           issue_number: ${{ github.event.issue.number }}
           author: ${{ github.event.issue.user.login }}
         run: |
-          curl -X POST \
+           curl -X POST \
           -H "Content-Type: application/json" \
-          -d '{
-            "username": "이슈봇",
-            "embeds" : [
-              {
-                "title": "이슈 오픈: $title",
-                "color": 1127128,
-                "description": "$url",
-                "fields": [
-                  {
-                    "name": "넘버",
-                    "value": "#$issue_number",
-                    "inline": true
-                  },
-                  {
-                    "name": "작성자",
-                    "value": "$author",
-                    "inline": true
-                  }
-                ]
-              }
-            ]
-          }'\ ${{ secrets.DISCORD_LINK }}
+          -d "{
+          \"username\": \"이슈봇\",
+          \"embeds\": [
+            {
+              \"title\": \"이슈 오픈: $title\",
+              \"color\": 1127128,
+              \"description\": \"$url\",
+              \"fields\": [
+                {
+                  \"name\": \"넘버\",
+                  \"value\": \"#$issue_number\",
+                  \"inline\": true
+                },
+                {
+                  \"name\": \"작성자\",
+                  \"value\": \"$author\",
+                  \"inline\": true
+                }
+              ]
+            }
+          ]
+        }" \
+          ${{ secrets.DISCORD_LINK }}

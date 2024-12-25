@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Load Notification Template
-        run: echo "NOTIFICATION_TEMPLATE=${{ variables.NOTIFICATION_TEMPLATE }}" >> $GITHUB_ENV
+        run: echo "NOTIFICATION_TEMPLATE=${{ secrets.NOTIFICATION_TEMPLATE }}" >> $GITHUB_ENV
 
       - uses: Ilshidur/action-discord@0.3.2
         env:

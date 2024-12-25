@@ -9,37 +9,41 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
       - name: Send Message to discord
         env:
-          title: ${{ github.event.issue.title }}
-          url: ${{ github.event.issue.html_url }}
-          issue_number: ${{ github.event.issue.number }}
-          author: ${{ github.event.issue.user.login }}
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_LINK }}
+
         run: |
-          curl -X POST \
-            -H "Content-Type: application/json" \
-            -d "$(cat <<EOF
+          title="${{ github.event.issue.title }}"
+          url="${{ github.event.issue.html_url }}"
+          issue_number="${{ github.event.issue.number }}"
+          author="${{ github.event.issue.user.login }}"
+          
+          json_payload=$(jq -n \
+            --arg title "$title" \
+            --arg url "url" \
+            --arg issue_number "$issue_number" \
+            --arg author "$author" \
+                  '{
+          username: "이슈봇",
+          embeds: [
             {
-              "username": "이슈봇",
-              "embeds": [
-                {
-                  "title": "이슈 오픈: ${title}",
-                  "color": 1127128,
-                  "description": "${url}",
-                  "fields": [
-                    {
-                      "name": "넘버",
-                      "value": "#${issue_number}",
-                      "inline": true
-                    },
-                    {
-                      "name": "작성자",
-                      "value": "${author}",
-                      "inline": true
-                    }
-                  ]
-                }
+              title: ("이슈 오픈: " + $title),
+              color: 1127128,
+              description: $url,
+              fields: [
+                { name: "넘버", value: ("#" + $issue_number), inline: true },
+                { name: "작성자", value: $author, inline: true }
               ]
             }
-            EOF
-            )" ${{ secrets.DISCORD_LINK }}
+          ]
+         }')
+          
+          curl -X POST \
+              -H "Content-Type: application/json \
+              -d "$json_payload" \
+              "$DISCORD_WEBHOOK"
+          
